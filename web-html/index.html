@@ -1,1 +1,630 @@
+<!DOCTYPE html>
+<html style="background-color: black; text-align: center;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ETHPLAY.IO</title>
+    <link rel="stylesheet" href="design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+  </head>
+  <body style="background-color: rgb(59,57,71);">
+    <div class="nav-bar">
+      <table class="nav">
+        <tr>
+          <td class="nav-item" style="text-align: start;">ETHEREUM LOTTERY GAME</td>
+          <td class="nav-item"><button class="nav-button-active">HOME</button></td>
+          <td class="nav-item"><button class="nav-button" id="logInID" onclick="goToLogIn()">LOGIN</button></td>
+          <td class="nav-item"><button class="nav-button" id="signUpID" onclick="goToSignUp()">SIGNUP</button></td>
+          <td class="nav-item"><button class="nav-button" id="profileID" onclick="goToProfile()">PROFILE</button></td>
+          <td class="nav-item"><button class="nav-button" id="signOutID" onclick="goToSignOut()">SIGNOUT</button></td>
+        </tr>
+      </table>
+    </div>
 
+    <div style="text-align: center;">
+      <div class=flex-container>
+        <div class=flex-item>
+          <h5>RESULTS</h5>
+          <table class="first" id="resultsID"></table>
+        </div>
+        <div class=flex-item>
+          <h5>BLOCK HASH TIME</h5>
+          <ul class="second" id="transationsID">
+          </ul>
+        </div>
+      </div>
+
+      <div class="center">
+        <table class="fifth">
+          <tr>
+            <td style="text-align: center"><div id="welcomeID"></div></td>
+            <td style="text-align: center"><div id="playerBalanceID">Your Balance: </div></td>
+            <td style="text-align: center"></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="padding-left: 20px;">
+                <div class=item-btn>
+                  <button id="play4ExactID" onclick="play4Exact()" class="btnItem">FIRST 4 EXACT</button>
+                  <br><br>
+                  <button id="play4MixedID" onclick="play4Mixed()" class="btnItem">FIRST 4 MIXED</button>
+                  <br><br>
+                  <button id="play3ExactID" onclick="play3Exact()" class="btnItem">FIRST 3 EXACT</button>
+                  <br><br>
+                  <button id="play3MixedID" onclick="play3Mixed()" class="btnItem">FIRST 3 MIXED</button>
+                  <br><br>
+                  <button id="play2ExactID" onclick="play2Exact()" class="btnItem">FIRST 2 EXACT</button>
+                  <br><br>
+                  <button id="play2MixedID" onclick="play2Mixed()" class="btnItem">FIRST 2 MIXED</button>
+                  <br><br>
+                  <button id="play1ExactID" onclick="play1Exact()" class="btnItem">FIRST 1 EXACT</button>
+                  <br><br>
+                  <button id="playODDID" onclick="playODD()" class="btnItem">FIRST ODD</button>
+                  <br><br>
+                  <button id="playEVENID" onclick="playEVEN()" class="btnItem">FIRST EVEN</button>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="flex-container-part">
+                &nbsp;&nbsp;&nbsp;<input type="text" id="pinShowId" style="align-self: flex-start; text-align: center; height: 40px; width:215px;margin-bottom: 2px;" disabled>
+                <div class=flex-container-numb>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('1')">1</button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('2')">2</button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('3')">3</button></div>
+                </div>
+                <div class=flex-container-numb>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('4')">4</button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('5')">5</button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('6')">6</button></div>
+                </div>
+                <div class=flex-container-numb>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('7')">7</button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('8')">8</button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('9')">9</button></div>
+                </div>
+                <div class=flex-container-numb>
+                  <div class=flex-item-numb><button class="numb" onclick="clearPlay()"> CLEAR </button></div>
+                  <div class=flex-item-numb><button class="numb" onclick="clickNumber('0')">0</button></div>
+                  <div class=flex-item-numb><button class="numb">REPLAY</button></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="flex-container-part" style="padding-right: 40px;">
+                <ul class="result">
+                  <li class="li-res" style="padding: 10px;" id="timer"><i class="fa fa-clock-o" style="font-size:20px">&nbsp;</i>00:00:00</li>
+                  <li class="li-res"> RESULTS: &nbsp;&nbsp;<span class=number-orange id="liveResultId"></span></li>
+                  <li class="li-res">
+                    <p style="direction: rtl;">BET AMOUNT</p>
+                    <img src="ETH-512.png" width="20px" height="20px" style="background-color:rgb(20, 20, 29);" />
+                    <div style="border-radius: 5px; border-style: ridge; border-color: blanchedalmond; display: inline; padding: 2%;">
+                      <input type="number" style="resize: none; border: transparent;width: 30%; height: 10%; background-color: rgb(24, 17, 36);color: blanchedalmond; initial-value: 1;" />
+                      <button style="margin: 2;">1/2</button><button style="margin: 2;">2X</button><button style="margin: 2;">MAX</button>
+                    </div>
+                    <h5 style="word-spacing: 80px;margin-top: 2%;">WINS<span class="number-orange">0</span> TOTAL<span class="number-orange">0</span></h5>
+                  </li>
+                  <li class="li-res"><button id="logInBtn" style="margin-top: 20px;margin-left: 190px;">PLAY</button></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+      </div>
+
+      <div class=flex-container>
+        <div class=flex-item>
+          <table class="third">
+            <tr><td style="text-align: center;padding: 10px;">LIVE under construction*</td></tr>
+            <tr><td style="word-spacing: 25px;">mahmoud <span class="life-color-inside">0.8000ETH</span> </td></tr>
+            <tr><td class="live-time">26891788 - 02/16 22:28:50.0</td></tr>
+            <tr><td style="word-spacing: 25px;">mahmoud <span class="life-color-inside">0.6000ETH</span></td></tr>
+            <tr><td class="live-time">26891788 - 02/16 22:28:28.5</td></tr>
+            <tr><td style="word-spacing: 25px;">mahmoud <span class="life-color-inside">0.9000ETH</span> </td></tr>
+            <tr><td class="live-time">26891787 - 02/16 22:27:54.0</td></tr>
+            <tr><td style="word-spacing: 25px;">mahmoud <span class="life-color-inside">0.6000ETH</span></td></tr>
+            <tr><td class="live-time">26891787 - 02/16 22:27:38.5</td></tr>
+            <tr><td style="word-spacing: 25px;">mahmoud <span style="color:rgb(81, 151, 81);">+9.8000ETH</span></td></tr>
+            <tr><td class="live-time">26891786 - 02/16 22:27:24.5</td></tr>
+          </table>
+        </div>
+        <div class=flex-item>
+          <ul class="forth">
+            <li style="padding-bottom: 30px;word-spacing: 230px;">RESULTS <span style="color:  rgb(69, 58, 107);">MY BETS</span></li>
+            <li style="padding: 10px;word-spacing: 190px;">Time No. Number</li>
+            <li class="odd">02/15/23:02 26890381 <span class=number-orange>85076</span></li>
+            <li>02/15/23:01 26890380 <span class=number-orange>89842</span></li>
+            <li class="odd">02/15/23:00 26890379 <span class=number-orange>97036</span></li>
+            <li>02/15/22:59 26890378 <span class=number-orange>44728</span></li>
+            <li class="odd">02/15/22:58 26890377 <span class=number-orange>06736</span></li>
+            <li>02/15/22:57 26890376 <span class=number-orange>73978</span></li>
+            <li class="odd">02/15/22:56 26890375 <span class=number-orange>59399</span></li>
+            <li> 02/15/22:55 26890374 <span class=number-orange>69839</span></li>
+            <li class="odd"> 02/15/22:54 26890373 <span class=number-orange>63284</span></li>
+            <li>02/15/22:53 26890372 <span class=number-orange>62254</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+    <table width="100%" border="2" style="border-color: gray; background-color: whitesmoke">
+      <tr>
+        <td>
+          <table>
+            <tr>
+              <td>
+                <table>
+                  <tr>
+                    <td style="width: 180px; text-align: center;" id="prizeId">
+                      <input id="playPointId" type="number" style="text-align: center;" onkeyup="onChangePointNumber()">
+                      <br>
+                      To Win
+                      <br>
+                      <input id="playPrizeId" type="number" style="text-align: center;" disabled>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 180px; text-align: center;"><input type="text" style="text-align: center;" disabled></td>
+                  </tr>
+                </table>
+                <table>
+                  <tr>
+                    <td style="width: 60px;"><button style="width: 100%;">CLEAR</button></td>
+                    <td style="width: 60px;"><button style="width: 100%;">0</button></td>
+                    <td style="width: 60px;"><button style="width: 100%;" onclick="selectToPlay()" id="goId" disabled>GO</button></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h3 id="labelToPlayId"></h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%" border="2" style="border-color: gray; background-color: whitesmoke">
+      <tr>
+        <td width="33%" style="vertical-align: top;">
+          <table id="historicsID" border="1" style="border-color: gray; background-color: whitesmoke">
+          </table>
+        </td>
+        <td width="66%" style="vertical-align: top;">
+          <table id="txRecordsID" border="1" style="border-color: gray; background-color: whitesmoke; text-align: right;">
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyC_Y1II2C9KPhWVrUHSas3hJMZ9PZgpAQc",
+        authDomain: "blockchainfirebase.firebaseapp.com",
+        databaseURL: "https://blockchainfirebase-default-rtdb.firebaseio.com",
+        projectId: "blockchainfirebase",
+        storageBucket: "blockchainfirebase.appspot.com",
+        messagingSenderId: "128824515834",
+        appId: "1:128824515834:web:15f4e0f1dddb13e3737d43",
+        measurementId: "G-7SN03YEDEW"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      var resultIndex = 0;
+      var transactionIndex = 0;
+
+      var databaseRef = firebase.database().ref();
+
+      var txRecords = document.getElementById("txRecordsID");
+      var historics = document.getElementById("historicsID");
+
+      var results = document.getElementById("resultsID");
+      var transations = document.getElementById("transationsID");
+
+
+      var transactionsRef = databaseRef.child('transactions');
+      var defaultGameRef = databaseRef.child('currentGame').child('defaultGame');
+      var historicsDefaultGameRef = databaseRef.child('historics').child('defaultGame');
+      var currentDefaultGameNumberRef = databaseRef.child('currentDefaultGameNumber');
+
+      var readableData;
+      var userUID;
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          console.log(user.email);
+          document.getElementById('welcomeID').innerHTML = "welcome "+user.email;
+          document.getElementById('logInID').disabled = true;
+          document.getElementById('signUpID').disabled = true;
+          document.getElementById('signOutID').disabled = false;
+          document.getElementById('profileID').disabled = false;
+
+          console.log(user.uid);
+          userUID = user.uid;
+          databaseRef.child('accounts').child(userUID).child('readable').on('value', snapshot => {
+            console.log(snapshot.val());
+            readableData = snapshot.val();
+            if (readableData.etherPoints) {
+              console.log(readableData.etherPoints);
+              var etherValue = (readableData.etherPoints/10000).toFixed(4);
+              document.getElementById('playerBalanceID').innerHTML = 'Your Balance: '+etherValue+' ether';
+            }
+          })
+        }
+        else {
+          // location.href = "login.html";
+          // console.log('batata');
+          document.getElementById('welcomeID').innerHTML = 'You Play On Test Mode';
+          document.getElementById('logInID').disabled = false;
+          document.getElementById('signUpID').disabled = false;
+          document.getElementById('signOutID').disabled = true;
+          document.getElementById('profileID').disabled = true;
+        }
+      });
+
+      var currentStartDate;
+      var currentEndDate;
+
+      var generalStartDate;
+      var generalEndDate;
+      var currentDefaultGameNumber;
+
+      var gameType;
+
+      var currentGame;
+      var prizeExact;
+
+      var numberToPlay = '';
+
+      var numberLength = 0;
+
+      transactionsRef.on("child_added", function(snapshot, prevChildKey) {
+        var newPost = snapshot.val();
+        $("#transationsID").prepend('<li class="li-second"><span class="green-part; left-to-right"">'+newPost.blockNumber+' '+shrink(newPost.txHash)+' </span><div class="right-to-left">'+newPost.timestamp+':0</div></li>');
+        transactionIndex++;
+        if (transactionIndex > 10) {
+          $('#transationsID li:last-child').remove();
+        }
+      });
+
+      historicsDefaultGameRef.on("child_added", function(snapshot, prevChildKey) {
+        var newPost = snapshot.val();
+        var i = 0;
+        var resultValue = '';
+        var gameTime = ''
+        for(var k in newPost.results) {
+          i++;
+          resultValue += newPost.results[k].number +' ';
+          if (i==4) { gameTime = newPost.results[k].timestamp; }
+        }
+        var recordNumber = '';
+
+        if (newPost.gameNumber > 99999) { recordNumber = ''+newPost.gameNumber; }
+        else {
+          if (newPost.gameNumber > 9999) { recordNumber = '0'+newPost.gameNumber; }
+          else {
+            if (newPost.gameNumber > 999) { recordNumber = '00'+newPost.gameNumber; }
+            else {
+              if (newPost.gameNumber > 99) { recordNumber = '000'+newPost.gameNumber; }
+              else {
+                if (newPost.gameNumber > 9) { recordNumber = '0000'+newPost.gameNumber; }
+                else { recordNumber = '00000'+newPost.gameNumber; }
+              }
+            }
+          }
+        }
+
+        var rowResult = results.insertRow(0);
+        var cell1Result = rowResult.insertCell(0);
+        var cell2Result = rowResult.insertCell(1);
+        var cell3Result = rowResult.insertCell(2);
+
+        cell1Result.innerHTML = recordNumber;
+        cell2Result.innerHTML = '[<span class=number-orange> '+resultValue+' </span>]';
+        cell3Result.innerHTML = gameTime;
+
+        resultIndex++;
+        if (resultIndex > 10) {
+          results.deleteRow(10);
+        }
+      });
+
+
+
+
+
+      defaultGameRef.on('value', snapshot => {
+        console.log(snapshot.val());
+        var currentValue = snapshot.val();
+        currentGame = snapshot.val();
+        if (currentValue) {
+          if (currentValue.results){
+            var currentResults = currentValue.results;
+            var liveResult = '';
+            for(var k in currentResults) {
+              liveResult += ' '+currentResults[k].number;
+              // document.getElementById(k).style.backgroundColor = 'yellow';
+            }
+            document.getElementById('liveResultId').innerHTML = liveResult;
+          }
+          else {
+            document.getElementById('liveResultId').innerHTML = '-';
+            console.log(currentValue.startDate);
+            generalStartDate = currentValue.startDate;
+            generalEndDate = currentValue.endDate;
+
+            currentStartDate = new Date (currentValue.startDate);
+            currentEndDate = new Date (currentValue.endDate);
+            console.log(currentStartDate.getMinutes(), currentEndDate.getMinutes(), '  ', currentStartDate.getSeconds(), currentStartDate.getSeconds());
+          }
+        }
+        else {
+          document.getElementById('liveResultId').innerHTML = '-'
+        }
+      })
+
+      currentDefaultGameNumberRef.on('value', snapshot => {
+        currentDefaultGameNumber = snapshot.val();
+      })
+
+      setInterval(function () {
+        var localDate = new Date();
+        if ((currentStartDate) && (currentEndDate)) {
+          var localTime = localDate.getTime();
+          var timeTrigger = parseInt((generalEndDate-localTime)/1000);
+          if ((timeTrigger > 0)&&(timeTrigger < 240)) {
+            document.getElementById('timer').innerHTML = '<i class="fa fa-clock-o" style="font-size:20px">&nbsp;</i>'+timeTriggerChanger(timeTrigger);
+            document.getElementById('goId').disabled = false;
+          }
+          else {
+            document.getElementById('timer').innerHTML = '<i class="fa fa-clock-o" style="font-size:20px">&nbsp;</i>HOLD';
+            // document.getElementById('goId').disabled = true;
+          }
+        }
+        else {
+          document.getElementById('timer').innerHTML = '<i class="fa fa-clock-o" style="font-size:20px">&nbsp;</i>HOLD';//'HOLD';
+          // document.getElementById('goId').disabled = true;
+        }
+      }, 1000);
+
+      /*
+      setInterval(function () {
+        if (userUID) {
+          console.log(userUID);
+          if (readableData) {
+            console.log(readableData);
+            console.log(readableData.address);
+            databaseRef.child('activeUsers').child(userUID).set(readableData.address);
+          }
+        }
+      }, 10000);
+      */
+      function play4Exact() {
+        clearAllButtons();
+        document.getElementById('play4ExactID').style.backgroundColor = '#e76902';
+        gameType = 'play4Exact';
+        prizeExact = 'prize4Exact';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 4;
+      }
+
+      function play4Mixed() {
+        clearAllButtons();
+        document.getElementById('play4MixedID').style.backgroundColor = '#e76902';
+        gameType = 'play4Mixed';
+        prizeExact = 'prize4Mixed';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 4;
+      }
+
+      function play3Exact() {
+        clearAllButtons();
+        document.getElementById('play3ExactID').style.backgroundColor = '#e76902';
+        gameType = 'play3Exact';
+        prizeExact = 'prize3Exact';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 3;
+      }
+
+      function play3Mixed() {
+        clearAllButtons();
+        document.getElementById('play3MixedID').style.backgroundColor = '#e76902';
+        gameType = 'play3Mixed';
+        prizeExact = 'prize3Mixed';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 3;
+      }
+
+      function play2Exact() {
+        clearAllButtons();
+        document.getElementById('play2ExactID').style.backgroundColor = '#e76902';
+        gameType = 'play2Exact';
+        prizeExact = 'prize2Exact';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 2;
+      }
+
+      function play2Mixed() {
+        clearAllButtons();
+        document.getElementById('play2MixedID').style.backgroundColor = '#e76902';
+        gameType = 'play2Mixed';
+        prizeExact = 'prize2Mixed';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 2;
+      }
+
+      function play1Exact() {
+        clearAllButtons();
+        document.getElementById('play1ExactID').style.backgroundColor = '#e76902';
+        gameType = 'play1Exact';
+        prizeExact = 'prize1Exact';
+        reloadPlayPrize();
+        clearPlay();
+        numberLength = 1;
+      }
+
+      function clearAllButtons() {
+        document.getElementById('play4ExactID').style.backgroundColor = '#050116';
+        document.getElementById('play4MixedID').style.backgroundColor = '#050116';
+        document.getElementById('play3ExactID').style.backgroundColor = '#050116';
+        document.getElementById('play3MixedID').style.backgroundColor = '#050116';
+        document.getElementById('play2ExactID').style.backgroundColor = '#050116';
+        document.getElementById('play2MixedID').style.backgroundColor = '#050116';
+        document.getElementById('play1ExactID').style.backgroundColor = '#050116';
+      }
+
+      function onChangePointNumber() {
+        reloadPlayPrize();
+      }
+
+      function reloadPlayPrize() {
+        if (document.getElementById('playPointId').value){
+          var playPoint = document.getElementById('playPointId').value;
+          if (currentGame) {
+            if (currentGame[prizeExact]){
+              document.getElementById('playPrizeId').value = ((playPoint*currentGame[prizeExact]).toFixed(4));
+            }
+            else {
+              document.getElementById('playPrizeId').value = 'select game type';
+            }
+          }
+          else {
+            document.getElementById('playPrizeId').value = 'select game type';
+          }
+        }
+      }
+
+      function clickNumber(param) {
+        if (numberToPlay.length < numberLength) {
+          numberToPlay += param;
+          document.getElementById('pinShowId').value = numberToPlay;
+        }
+      }
+
+      function clearPlay() {
+        numberToPlay = '';
+        document.getElementById('pinShowId').value = numberToPlay;
+      }
+
+      function selectToPlay() {
+        var pointPlayed = (document.getElementById('playPointId').value)*10000;
+        if (userUID) {
+          if (gameType){
+            if (numberToPlay) {
+              if (pointPlayed){
+                console.log('numberToPlay: '+numberToPlay);
+                console.log('pointPlayed: '+pointPlayed);
+                console.log('gameType: '+gameType);
+                console.log('prizeExact: '+prizeExact);
+                console.log('gameNumber: '+currentDefaultGameNumber);
+                var gameOrderObject = {
+                  numberToPlay: numberToPlay,
+                  pointPlayed: parseInt(pointPlayed),
+                  gameType: gameType,
+                  prizeExact: prizeExact,
+                  gameNumber: currentDefaultGameNumber
+                }
+                databaseRef.child('orders').child('playEthDefaultGame').child(userUID).set(gameOrderObject);
+              }
+              else {
+                alert('you dont select the point played');
+              }
+            }
+            else {
+              alert('you dont select the number to play');
+            }
+          }
+          else {
+            alert('you dont select the game type');
+          }
+        }
+        else {
+          alert('you have to log in 7abibi');
+        }
+
+
+        document.getElementById('labelToPlayId').innerHTML = "you select "+numberToPlay+" to play "+ document.getElementById('playPointId').value+" ether to win "+ document.getElementById('playPrizeId').value+"ether, game number "+currentDefaultGameNumber;
+
+        // var gameOrderObject = {
+        //   numberToPlay: numberToPlay,
+        //   pointToPlay: document.getElementById('playPointId').value
+        // }
+
+        // databaseRef.child('orders').child('withdrawEthereum').child(userUID).set({speed: withdrowValue, value: numberPointToWithdraw, publicAddress: userPublicAddress});
+      }
+
+      function goToLogIn() {
+        location.href = "login.html";
+      }
+
+      function goToSignUp() {
+        location.href = "signup.html";
+      }
+
+      function goToProfile() {
+        location.href = "profile.html";
+      }
+
+      function goToSignOut() {
+        firebase.auth().signOut().then(() => {
+          // Sign-out successful.
+        }).catch((error) => {
+          // An error happened.
+        });
+      }
+
+      function shrink (someString) {
+        var newValue = '';
+        for(var i = someString.length-1; i >= (someString.length-38); i--){
+          newValue = someString[i]+newValue;
+        }
+        return '....'+newValue;
+      }
+
+      function timeTriggerChanger(someTimeTrigger) {
+        var value = '00:';
+        var minutes = (someTimeTrigger - someTimeTrigger%60)/60;
+        if (minutes < 9) {
+          value += '0';
+        }
+        value += minutes;
+        value += ':';
+        if (someTimeTrigger%60 < 9) {
+          value += '0';
+        }
+        value += (someTimeTrigger%60);
+        return value;
+      }
+
+    </script>
+  </body>
+</html>

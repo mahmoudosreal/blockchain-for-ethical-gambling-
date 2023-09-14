@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ETHPLAY.IO - PROFILE</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+  </head>
+  <body>
+    <h1>ETHPLAY.IO - PROFILE</h1>
+    <br>
+    <h3 id="welcomeID"></h3>
+    <br><br>
+    <h3 id="ethereumAddressID"></h3>
+    <br><br>
+    <h3 id="etherPointsID"></h3>
+    <br><br>
+    <a target="_blank" id="lastTransactionID">Last Transaction: ...</a>
+    <br><br><br><br>
+
+    <button onclick="doHome()">HOME</button>
+    <br><br><br><br>
+
+    <h2>Withdraw Points</h2>
+    <br><br>
+    <label>not fully supported in the backend</label>
+    <br><br>
+    <input type="userPublicAddress" id="userPublicAddressID" style="width:90%">
+    <br><br>
+    <input type="number" id="numberPointToWithdrawId">
+    <br><br>
+    <select name="withdrowValue" id="withdrowTypeID">
+      <option value="slow" >Slow - Withdrow Fees 0.0009 Points</option>
+      <option value="normal">Normal - Withdrow Fees 0.002 Points</option>
+      <option value="fast">Fast - Withdrow Fees 0.0025 Points</option>
+    </select>
+    <br><br>
+    <button onclick="withdraw()">withdraw</button>
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyC_Y1II2C9KPhWVrUHSas3hJMZ9PZgpAQc",
+        authDomain: "blockchainfirebase.firebaseapp.com",
+        databaseURL: "https://blockchainfirebase-default-rtdb.firebaseio.com",
+        projectId: "blockchainfirebase",
+        storageBucket: "blockchainfirebase.appspot.com",
+        messagingSenderId: "128824515834",
+        appId: "1:128824515834:web:15f4e0f1dddb13e3737d43",
+        measurementId: "G-7SN03YEDEW"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      var databaseRef = firebase.database().ref();
+      var userUID;
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          console.log(user.uid);
+          userUID = user.uid;
+          databaseRef.child('accounts').child(user.uid).child('readable').on('value', snapshot => {
+            console.log(snapshot.val());
+            var readableData = snapshot.val();
+            document.getElementById('welcomeID').innerHTML = 'Welcome '+readableData.email;
+            document.getElementById('ethereumAddressID').innerHTML = 'Your Ethereum Address: '+readableData.address;
+
+            if (readableData.etherPoints) {
+              document.getElementById('etherPointsID').innerHTML = 'You Have a : '+((readableData.etherPoints/10000).toFixed(4))+' ETHER';
+              // document.getElementById('playPrizeId').value = ((playPoint*currentGame[prizeExact]).toFixed(4));
+            }
+            else {
+              document.getElementById('etherPointsID').innerHTML = 'You Have a : 0 ETHER';
+            }
+          })
+          databaseRef.child('accounts').child(user.uid).child('readable').child('withdrawTxHash').on('child_added', snapshot => {
+            console.log(snapshot.val());
+            document.getElementById('lastTransactionID').innerHTML = "Last Transaction: "+snapshot.val();
+            document.getElementById('lastTransactionID').href = "https://ropsten.etherscan.io/tx/"+snapshot.val();
+          })
+        }
+        else {
+          location.href = "index.html";
+        }
+      });
+
+      function doHome() {
+        location.href = "index.html";
+      }
+
+      function withdraw() {
+        var withdrowType = document.getElementById('withdrowTypeID').value;
+        var numberPointToWithdraw = (document.getElementById('numberPointToWithdrawId').value)*10000;
+        var userPublicAddress = document.getElementById('userPublicAddressID').value;
+        console.log(userUID, numberPointToWithdraw, withdrowType, userPublicAddress);
+        databaseRef.child('orders').child('withdrawEthereum').child(userUID).set({speed: withdrowType, value: numberPointToWithdraw, publicAddress: userPublicAddress});
+      }
+
+    </script>
+  </body>
+</html>

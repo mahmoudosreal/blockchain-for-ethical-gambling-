@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ETHPLAY.IO - LOGIN</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+  </head>
+  <body>
+    <h1>ETHPLAY.IO - LOGIN</h1>
+    <br>
+    <br>
+    <input type="text" placeholder="email" id="emailIdLogIn">
+    <br><br>
+    <input type="password" placeholder="password" id="passwordIdLogIn">
+    <br><br>
+    <button onclick="doLogIn()">LOGIN</button>
+    <br><br><br><br>
+    <button onclick="doHome()">HOME</button>
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyC_Y1II2C9KPhWVrUHSas3hJMZ9PZgpAQc",
+        authDomain: "blockchainfirebase.firebaseapp.com",
+        databaseURL: "https://blockchainfirebase-default-rtdb.firebaseio.com",
+        projectId: "blockchainfirebase",
+        storageBucket: "blockchainfirebase.appspot.com",
+        messagingSenderId: "128824515834",
+        appId: "1:128824515834:web:15f4e0f1dddb13e3737d43",
+        measurementId: "G-7SN03YEDEW"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      function doLogIn () {
+        var emailValue = document.getElementById('emailIdLogIn').value;
+        var passwordValue = document.getElementById('passwordIdLogIn').value;
+        console.log(emailValue, passwordValue);
+        firebase.auth().signInWithEmailAndPassword(emailValue, passwordValue)
+          .then((user) => {
+          })
+          .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            alert(errorCode, errorMessage);
+          });
+      }
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          location.href = "index.html";
+        }
+        else {
+        }
+      });
+
+      function doHome() {
+        location.href = "index.html";
+      }
+
+    </script>
+  </body>
+</html
