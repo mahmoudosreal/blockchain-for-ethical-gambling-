@@ -7,8 +7,7 @@ const databaseRef = admin.database().ref();
 const Tx = require('ethereumjs-tx').Transaction
 const Web3 = require('web3')
 
-const web3 = new Web3('https://ropsten.infura.io/v3/c6c39c1727204725b6b5531047904894')
-// const web3 = new Web3('https://ropsten.infura.io/v3/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+const web3 = new Web3('https://ropsten.infura.io/v3/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 
 // firebase deploy --only functions:checkupTransactions
 exports.checkupTransactions = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
