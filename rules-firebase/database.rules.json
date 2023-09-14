@@ -1,0 +1,44 @@
+{
+  "rules": {
+    ".read": "auth.uid === 'bkb1xlIqoTPe1cnEyhU7LUcqY6u1'",
+    ".write": "auth.uid === 'bkb1xlIqoTPe1cnEyhU7LUcqY6u1'",
+    "accounts": {
+      "$uid": {
+        "readable": {
+          ".read": "($uid === auth.uid)"
+        }
+      }
+    },
+    "transactions": {
+      ".read": true
+    },
+    "currentGame": {
+      ".read": true
+    },
+    "historics": {
+      ".read": true
+    },
+    "currentDefaultGameNumber": {
+      ".read": true
+    },
+    "activeUsers": {
+      "$uid": {
+        ".read": "($uid === auth.uid)",
+        ".write": "($uid === auth.uid)"
+      }
+    },
+    "orders": {
+      "withdrawEthereum": {
+        "$uid": {
+          ".write": "($uid === auth.uid)&&(!data.exists())"
+        }
+      },
+      "playEthDefaultGame": {
+        "$uid": {
+          ".write": "($uid === auth.uid)&&(!data.exists())&& (root.child('currentGame').child('defaultGame').child('endDate').val() > now )",
+          ".validate": "root.child('accounts').child($uid).child('readable').child('etherPoints').val() >= newData.child('pointPlayed').val()"
+        }
+      }
+    }
+  }
+}
